@@ -3329,8 +3329,6 @@ public class EnigmaticEventHandler {
 	}
 
 	public static void grantStarterGear(ServerPlayer player) {
-		EnigmaticLegacy.LOGGER.info("Granting starter gear to " + player.getGameProfile().getName());
-
 		/*
 		 * Eh, annoying defaults.
 		 */
@@ -3339,6 +3337,12 @@ public class EnigmaticEventHandler {
 			EnigmaticLegacy.packetInstance.send(PacketDistributor.PLAYER.with(() -> player), new PacketPatchouliForce());
 			SuperpositionHandler.setPersistentBoolean(player, EnigmaticEventHandler.NBT_KEY_PATCHOULIFORCE, true);
 		}
+
+		if (OmniconfigHandler.stopFuckingGivingInventoryItems.getValue()) {
+			return;
+		}
+
+		EnigmaticLegacy.LOGGER.info("Granting starter gear to " + player.getGameProfile().getName());
 
 		/*
 		 * Handler for bestowing Enigmatic Amulet to the player, when they first join

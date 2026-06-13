@@ -150,7 +150,9 @@ tasks.withType(JavaCompile) {
 jar.finalizedBy('reobfJar')
 //publish.dependsOn('reobfJar')
 
-tasks.modrinth.dependsOn(tasks.modrinthSyncBody)
+tasks.named('modrinth') {
+	dependsOn(tasks.named('modrinthSyncBody'))
+}
 
 publishing {
 

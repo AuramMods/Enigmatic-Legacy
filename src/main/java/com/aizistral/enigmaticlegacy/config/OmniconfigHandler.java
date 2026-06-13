@@ -30,6 +30,7 @@ public class OmniconfigHandler {
 	public static Omniconfig.BooleanParameter disableAOEShiftSuppression;
 	public static Omniconfig.BooleanParameter retriggerRecipeUnlocks;
 	public static Omniconfig.BooleanParameter crashOnUnnamedPool;
+	public static Omniconfig.BooleanParameter stopFuckingGivingInventoryItems;
 
 	public static Omniconfig.IntParameter soulCrystalsMode;
 	public static Omniconfig.IntParameter maxSoulCrystalLoss;
@@ -163,6 +164,11 @@ public class OmniconfigHandler {
 				.comment("If true, Enigmatic Legacy will cycle through each player's recipe book and trigger 'minecraft:recipe_unlocked' criterion trigger for everything that they have unlocked upon player joining the world.")
 				.getBoolean("RetriggerRecipeUnlocks", true);
 
+		stopFuckingGivingInventoryItems = builder
+				.comment("If true, Enigmatic Legacy will stop giving initial inventory items to players when they join a world.")
+				.sync()
+				.getBoolean("StopFuckingGivingInventoryItems", false);
+
 		Multimap<String, Field> accessibilityGeneratorMap = SuperpositionHandler.retainAccessibilityGeneratorMap(EnigmaticLegacy.MODID);
 		ITEMS_OPTIONS.clear();
 		builder.forceSynchronized(true);
@@ -229,4 +235,3 @@ public class OmniconfigHandler {
 	}
 
 }
-
