@@ -19,9 +19,12 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
+import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurio.DropRule;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
+import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
+import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 
 public abstract class ItemBaseCurio extends ItemBase implements ICurioItem, IBindable, Vanishable {
 
@@ -60,12 +63,40 @@ public abstract class ItemBaseCurio extends ItemBase implements ICurioItem, IBin
 
 	@Override
 	public boolean canEquip(SlotContext context, ItemStack stack) {
-		return !SuperpositionHandler.hasCurio(context.entity(), this);
+		return this.isEquippedInContext(context, stack) || !SuperpositionHandler.hasCurio(context.entity(), this);
 	}
 
 	@Override
 	public boolean canUnequip(SlotContext context, ItemStack stack) {
 		return true;
+	}
+
+	protected boolean isEquippedInContext(SlotContext context, ItemStack stack) {
+		if (context == null || stack.isEmpty())
+			return false;
+
+		ItemStack equipped = this.getEquippedStackInContext(context);
+		return !equipped.isEmpty() && (equipped == stack || ItemStack.matches(equipped, stack));
+	}
+
+	protected ItemStack getEquippedStackInContext(SlotContext context) {
+		if (context == null)
+			return ItemStack.EMPTY;
+
+		return CuriosApi.getCuriosHelper().getCuriosHandler(context.entity()).map(handler -> {
+			ICurioStacksHandler stacksHandler = handler.getCurios().get(context.identifier());
+
+			if (stacksHandler == null)
+				return ItemStack.EMPTY;
+
+			IDynamicStackHandler stackHandler = context.cosmetic() ? stacksHandler.getCosmeticStacks() : stacksHandler.getStacks();
+			int index = context.index();
+
+			if (index < 0 || index >= stackHandler.getSlots())
+				return ItemStack.EMPTY;
+
+			return stackHandler.getStackInSlot(index);
+		}).orElse(ItemStack.EMPTY);
 	}
 
 	@Override

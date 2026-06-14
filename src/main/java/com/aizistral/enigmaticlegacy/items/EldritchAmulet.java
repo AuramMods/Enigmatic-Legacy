@@ -127,8 +127,10 @@ public class EldritchAmulet extends AscensionAmulet implements IEldritch {
 	@Override
 	public boolean canEquip(SlotContext context, ItemStack stack) {
 		if (context.entity() instanceof Player player)
-			return !SuperpositionHandler.hasCurio(player, EnigmaticItems.ELDRITCH_AMULET)
-					&& SuperpositionHandler.isTheWorthyOne(player) && super.canEquip(context, stack);
+			return SuperpositionHandler.isTheWorthyOne(player)
+					&& (this.isEquippedInContext(context, stack)
+							|| (!SuperpositionHandler.hasCurio(player, EnigmaticItems.ELDRITCH_AMULET)
+									&& super.canEquip(context, stack)));
 		else
 			return false;
 	}

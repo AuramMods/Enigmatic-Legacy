@@ -65,8 +65,11 @@ public abstract class ItemSpellstoneCurio extends ItemBaseCurio implements ISpel
 	public boolean canEquip(SlotContext context, ItemStack stack) {
 		if (multiequip.getValue())
 			return super.canEquip(context, stack);
-		else
-			return super.canEquip(context, stack) && SuperpositionHandler.getSpellstone(context.entity()) == null;
+		else {
+			ItemStack equippedSpellstone = SuperpositionHandler.getSpellstone(context.entity());
+			return super.canEquip(context, stack)
+					&& (equippedSpellstone == null || equippedSpellstone == this.getEquippedStackInContext(context));
+		}
 	}
 
 	public int getCooldown(@Nullable Player player) {
